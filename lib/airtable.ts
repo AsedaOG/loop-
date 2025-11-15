@@ -113,9 +113,14 @@ export async function getProducts(): Promise<Product[]> {
         ? productType[0]
         : (typeof productType === 'string' ? productType : 'General')
       
+      const rawProductId = record.get('Product Id')
+      const productId = typeof rawProductId === 'string' || typeof rawProductId === 'number' 
+        ? rawProductId 
+        : undefined
+      
       return {
         id: record.id,
-        productId: record.get('Product Id'),
+        productId: productId,
         name: record.get('Product Name') as string,
         description: record.get('Product INFO') as string || '',
         price: Number(record.get('Unit Price')) || 0,
@@ -317,9 +322,14 @@ export async function getProduct(id: string): Promise<Product | null> {
       ? productType[0]
       : (typeof productType === 'string' ? productType : 'General')
     
+    const rawProductId = record.get('Product Id')
+    const productId = typeof rawProductId === 'string' || typeof rawProductId === 'number' 
+      ? rawProductId 
+      : undefined
+    
     return {
       id: record.id,
-      productId: record.get('Product Id'),
+      productId: productId,
       name: record.get('Product Name') as string,
       description: record.get('Product INFO') as string || '',
       price: Number(record.get('Unit Price')) || 0,
