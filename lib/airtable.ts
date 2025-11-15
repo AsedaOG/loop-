@@ -308,6 +308,11 @@ export async function createOrder(order: Order): Promise<string | null> {
 
 // Get a single product by ID
 export async function getProduct(id: string): Promise<Product | null> {
+  if (!base) {
+    console.warn('Airtable not configured')
+    return null
+  }
+  
   try {
     const record = await base(process.env.AIRTABLE_PRODUCTS_TABLE || 'Products').find(id)
     
