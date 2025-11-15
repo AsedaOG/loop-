@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loop Logistics Logo - Export to PNG</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #a8b896;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .logo-container {
+            background: #a8b896;
+            padding: 60px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #4a4a4a;
+        }
+        .instructions ol {
+            color: #666;
+            line-height: 1.8;
+        }
+        .instructions code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <svg
+            id="logo"
+            width="1200"
+            height="560"
+            viewBox="0 0 600 280"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <!-- Loop icon centered at top -->
+            <g transform="translate(200, 30)">
+                <!-- Top curved arrow (right to left, pointing down-left) -->
+                <path
+                    d="M 160 70 C 160 45, 130 30, 100 30 C 80 30, 65 35, 55 45 L 45 55"
+                    stroke="#4a4a4a"
+                    stroke-width="18"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                />
+                <!-- Top arrow head -->
+                <path
+                    d="M 45 55 L 30 45 M 45 55 L 35 70"
+                    stroke="#4a4a4a"
+                    stroke-width="18"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                />
+                
+                <!-- Bottom curved arrow (left to right, pointing up-right) -->
+                <path
+                    d="M 40 130 C 40 155, 70 170, 100 170 C 120 170, 135 165, 145 155 L 155 145"
+                    stroke="#4a4a4a"
+                    stroke-width="18"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                />
+                <!-- Bottom arrow head -->
+                <path
+                    d="M 155 145 L 170 155 M 155 145 L 165 130"
+                    stroke="#4a4a4a"
+                    stroke-width="18"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                />
+            </g>
+
+            <!-- Text: looplogistics -->
+            <text
+                x="300"
+                y="260"
+                font-family="system-ui, -apple-system, sans-serif"
+                font-size="68"
+                font-weight="600"
+                fill="#4a4a4a"
+                text-anchor="middle"
+                letter-spacing="-1"
+            >
+                looplogistics
+            </text>
+        </svg>
+    </div>
+
+    <div class="instructions">
+        <h2>📥 How to Save as PNG</h2>
+        <ol>
+            <li><strong>Right-click on the logo</strong> above</li>
+            <li>Select <code>Save Image As...</code> or <code>Copy Image</code></li>
+            <li>Save it as <code>loop-logo.png</code></li>
+        </ol>
+        <p><strong>Or use browser screenshot tools:</strong></p>
+        <ol>
+            <li><strong>Chrome/Edge:</strong> Right-click logo → Inspect → Right-click on the <code>&lt;svg&gt;</code> element → Capture node screenshot</li>
+            <li><strong>Firefox:</strong> Right-click → Take a Screenshot → Select the logo area</li>
+        </ol>
+        <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+            The logo is rendered at high resolution (1200x560px) for crisp quality at any size.
+        </p>
+    </div>
+
+    <script>
+        // Convert SVG to downloadable PNG
+        function downloadPNG() {
+            const svg = document.getElementById('logo');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 1200;
+            canvas.height = 560;
+            
+            // Fill background with logo green
+            ctx.fillStyle = '#a8b896';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const data = new XMLSerializer().serializeToString(svg);
+            const img = new Image();
+            const blob = new Blob([data], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+                
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = 'loop-logo.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                });
+            };
+            
+            img.src = url;
+        }
+        
+        // Add download button
+        const button = document.createElement('button');
+        button.textContent = '⬇️ Download as PNG';
+        button.style.cssText = 'padding: 12px 24px; font-size: 16px; background: #4a4a4a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 20px;';
+        button.onmouseover = () => button.style.background = '#333';
+        button.onmouseout = () => button.style.background = '#4a4a4a';
+        button.onclick = downloadPNG;
+        document.querySelector('.instructions').appendChild(button);
+    </script>
+</body>
+</html>
+
