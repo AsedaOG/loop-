@@ -24,58 +24,66 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Shopping Cart</h1>
+    <div className="container mx-auto px-4 py-8 sm:py-12">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">Shopping Cart</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
           {cart.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md p-4 flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0">
-                {item.image ? (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <ShoppingBag size={32} />
+            <div key={item.id} className="bg-white rounded-lg shadow-md p-4">
+              {/* Mobile & Tablet Layout */}
+              <div className="flex gap-4">
+                {/* Product Image */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-lg flex-shrink-0">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <ShoppingBag size={32} />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Product Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-base sm:text-lg text-gray-800 mb-1 line-clamp-2">{item.name}</h3>
+                  <p className="text-gray-600 text-sm mb-2">GH₵ {item.price.toFixed(2)} each</p>
+                  
+                  {/* Quantity & Price Row for Mobile */}
+                  <div className="flex items-center justify-between gap-3 mt-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="bg-gray-200 hover:bg-gray-300 rounded-full p-1.5 transition"
+                      >
+                        <Minus size={16} />
+                      </button>
+                      <span className="font-semibold text-base sm:text-lg w-8 text-center">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="bg-gray-200 hover:bg-gray-300 rounded-full p-1.5 transition"
+                      >
+                        <Plus size={16} />
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <p className="font-bold text-base sm:text-lg text-gray-800 whitespace-nowrap">
+                        GH₵ {(item.price * item.quantity).toFixed(2)}
+                      </p>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-500 hover:text-red-700 transition"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-              
-              <div className="flex-1">
-                <h3 className="font-bold text-lg text-gray-800">{item.name}</h3>
-                <p className="text-gray-600 text-sm">GH₵ {item.price.toFixed(2)} each</p>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  className="bg-gray-200 hover:bg-gray-300 rounded-full p-1 transition"
-                >
-                  <Minus size={18} />
-                </button>
-                <span className="font-semibold text-lg w-8 text-center">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="bg-gray-200 hover:bg-gray-300 rounded-full p-1 transition"
-                >
-                  <Plus size={18} />
-                </button>
-              </div>
-              
-              <div className="text-right">
-                <p className="font-bold text-lg text-gray-800">
-                  GH₵ {(item.price * item.quantity).toFixed(2)}
-                </p>
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-red-500 hover:text-red-700 transition mt-2"
-                >
-                  <Trash2 size={20} />
-                </button>
+                </div>
               </div>
             </div>
           ))}
