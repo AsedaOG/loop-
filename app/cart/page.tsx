@@ -3,6 +3,7 @@
 import { useCart } from '@/context/CartContext'
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
+import CartItemImage from '@/components/CartItemImage'
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getTotalPrice } = useCart()
@@ -33,20 +34,13 @@ export default function CartPage() {
             <div key={item.id} className="bg-white rounded-lg shadow-md p-4">
               {/* Mobile & Tablet Layout */}
               <div className="flex gap-4">
-                {/* Product Image */}
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-lg flex-shrink-0">
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <ShoppingBag size={32} />
-                    </div>
-                  )}
-                </div>
+                {/* Product Image - Dynamically loaded */}
+                <CartItemImage
+                  recordId={item.id}
+                  productName={item.name}
+                  fallbackImage={item.image}
+                  className="w-20 h-20 sm:w-24 sm:h-24"
+                />
                 
                 {/* Product Info */}
                 <div className="flex-1 min-w-0">
