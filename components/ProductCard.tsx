@@ -53,6 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
   }
 
   return (
+    <>
     <div 
       className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-primary-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
       onMouseEnter={() => setIsHovered(true)}
@@ -207,19 +208,20 @@ export default function ProductCard({ product }: { product: Product }) {
           </button>
         </div>
       </div>
-
-      {/* Image Lightbox */}
-      {showLightbox && (
-        <ImageLightbox
-          images={images}
-          currentIndex={currentImageIndex}
-          onClose={() => setShowLightbox(false)}
-          onNext={handleLightboxNext}
-          onPrev={handleLightboxPrev}
-          productName={product.name}
-        />
-      )}
     </div>
+
+    {/* Image Lightbox */}
+    {showLightbox && (
+      <ImageLightbox
+        images={images}
+        currentIndex={currentImageIndex}
+        onClose={() => setShowLightbox(false)}
+        onNext={handleLightboxNext}
+        onPrev={handleLightboxPrev}
+        productName={product.name}
+      />
+    )}
+    </>
   )
 }
 

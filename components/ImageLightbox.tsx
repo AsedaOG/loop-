@@ -1,7 +1,7 @@
 'use client'
 
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect } from 'react'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ImageLightboxProps {
   images: string[]
@@ -9,7 +9,7 @@ interface ImageLightboxProps {
   onClose: () => void
   onNext: () => void
   onPrev: () => void
-  productName: string
+  productName?: string
 }
 
 export default function ImageLightbox({
@@ -20,87 +20,127 @@ export default function ImageLightbox({
   onPrev,
   productName
 }: ImageLightboxProps) {
-  // Close on Escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [onClose])
+  const hasMultipleImages = images.length > 1
 
-  // Prevent body scroll when lightbox is open
+  // Handle keyboard navigation
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      } else if (e.key === 'ArrowLeft' && hasMultipleImages) {
+        onPrev()
+      } else if (e.key === 'ArrowRight' && hasMultipleImages) {
+        onNext()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    
+    // Prevent body scroll when lightbox is open
     document.body.style.overflow = 'hidden'
+
     return () => {
+      window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
     }
-  }, [])
+  }, [onClose, onNext, onPrev, hasMultipleImages])
+
+  // Handle click on backdrop to close
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
 
   return (
-    <div 
-      className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
-      onClick={onClose}
+    <div
+      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+      onClick={handleBackdropClick}
     >
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors p-3 bg-black/50 rounded-full backdrop-blur-sm z-10 hover:scale-110 transition-transform"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 z-[110] bg-white/10 hover:bg-white/20 text-white p-2 sm:p-3 rounded-full transition-all backdrop-blur-sm hover:scale-110"
         aria-label="Close"
       >
-        <X size={28} strokeWidth={2.5} />
+        <X size={24} strokeWidth={2.5} />
       </button>
 
-      {/* Image Container - Large Size */}
-      <div 
-        className="relative w-full h-full flex items-center justify-center p-4 sm:p-8"
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* Product Name (Optional) */}
+      {productName && (
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-[110] bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
+          <p className="text-sm sm:text-base font-semibold">{productName}</p>
+        </div>
+      )}
+
+      {/* Navigation Arrows */}
+      {hasMultipleImages && (
+        <>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onPrev()
+            }}
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-[110] bg-white/10 hover:bg-white/20 text-white p-3 sm:p-4 rounded-full transition-all backdrop-blur-sm hover:scale-110"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={32} strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onNext()
+            }}
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-[110] bg-white/10 hover:bg-white/20 text-white p-3 sm:p-4 rounded-full transition-all backdrop-blur-sm hover:scale-110"
+            aria-label="Next image"
+          >
+            <ChevronRight size={32} strokeWidth={2.5} />
+          </button>
+        </>
+      )}
+
+      {/* Main Image */}
+      <div className="relative max-w-7xl max-h-full w-full h-full flex items-center justify-center">
         <img
           src={images[currentIndex]}
-          alt={`${productName} - Image ${currentIndex + 1}`}
-          className="max-w-[90vw] max-h-[90vh] min-w-[50vw] min-h-[50vh] w-auto h-auto object-contain"
+          alt={`${productName || 'Product'} - Image ${currentIndex + 1}`}
+          className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
         />
-
-        {/* Navigation Arrows (only if multiple images) */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onPrev()
-              }}
-              className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-2xl transition-all hover:scale-110 z-10"
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={36} strokeWidth={2.5} />
-            </button>
-            
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onNext()
-              }}
-              className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-2xl transition-all hover:scale-110 z-10"
-              aria-label="Next image"
-            >
-              <ChevronRight size={36} strokeWidth={2.5} />
-            </button>
-          </>
-        )}
-
-        {/* Image Counter */}
-        {images.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm text-white px-6 py-3 rounded-full text-base font-semibold z-10">
-            {currentIndex + 1} / {images.length}
-          </div>
-        )}
       </div>
 
-      {/* Instruction Text */}
-      <div className="absolute bottom-6 right-6 text-white/60 text-sm hidden sm:block">
-        Press <kbd className="px-2 py-1 bg-white/20 rounded font-mono">ESC</kbd> to close
-      </div>
+      {/* Image Indicators */}
+      {hasMultipleImages && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[110] flex gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-full">
+          {images.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => {
+                e.stopPropagation()
+                const diff = idx - currentIndex
+                if (diff > 0) {
+                  for (let i = 0; i < diff; i++) onNext()
+                } else if (diff < 0) {
+                  for (let i = 0; i < Math.abs(diff); i++) onPrev()
+                }
+              }}
+              className={`transition-all duration-300 rounded-full ${
+                idx === currentIndex
+                  ? 'bg-white w-10 h-3'
+                  : 'bg-white/50 hover:bg-white/75 w-3 h-3'
+              }`}
+              aria-label={`View image ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Image Counter */}
+      {hasMultipleImages && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[110] bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
+          {currentIndex + 1} / {images.length}
+        </div>
+      )}
     </div>
   )
 }
