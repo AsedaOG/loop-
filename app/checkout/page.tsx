@@ -4,7 +4,7 @@ import { useCart } from '@/context/CartContext'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Loader2, CheckCircle, Info } from 'lucide-react'
+import { Loader2, CheckCircle, Info, Truck } from 'lucide-react'
 
 export default function CheckoutPage() {
   const { cart, getTotalPrice, getTotalShipping, hasEstimateOnArrival, clearCart } = useCart()
@@ -22,13 +22,10 @@ export default function CheckoutPage() {
   const showEstimateMessage = hasEstimateOnArrival()
   const grandTotal = subtotal + shippingCost
   
-  // Debug logging
-  console.log('Cart items with shipping data:', cart.map(item => ({
-    name: item.name,
-    includeShip: item.includeShip,
-    shipping: item.shipping
-  })))
-  console.log('Total shipping cost:', shippingCost)
+  // Get list of items with estimate-on-arrival shipping
+  const estimateItems = cart.filter(item => 
+    item.includeShip?.toLowerCase().includes('estimate')
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,6 +47,7 @@ export default function CheckoutPage() {
             price: item.price,
           })),
           totalAmount: getTotalPrice(),
+          totalShipping: getTotalShipping(),
         }),
       })
 
@@ -174,13 +172,27 @@ export default function CheckoutPage() {
           
           <div className="space-y-3 mb-4">
             {cart.map((item) => (
-              <div key={item.id} className="flex justify-between text-gray-700">
-                <span>
-                  {item.name} x {item.quantity}
-                </span>
-                <span className="font-semibold">
-                  GH₵ {(item.price * item.quantity).toFixed(2)}
-                </span>
+              <div key={item.id}>
+                <div className="flex justify-between text-gray-700">
+                  <span>
+                    {item.name} x {item.quantity}
+                  </span>
+                  <span className="font-semibold">
+                    GH₵ {(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+                {/* Shipping indicator */}
+                {item.includeShip?.toLowerCase().includes('estimate') ? (
+                  <div className="flex items-center gap-1 text-xs text-amber-600 mt-1">
+                    <Truck size={12} />
+                    Shipping estimate on arrival
+                  </div>
+                ) : item.shipping && item.shipping > 0 ? (
+                  <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                    <Truck size={12} />
+                    Shipping: GH₵ {(item.shipping * item.quantity).toFixed(2)}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
@@ -199,8 +211,18 @@ export default function CheckoutPage() {
             )}
             
             {showEstimateMessage && (
-              <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
-                ⚠️ Some items: Shipping Estimate on arrival
+              <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <Truck size={14} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold mb-1">Shipping estimate on arrival:</p>
+                    <ul className="list-disc list-inside space-y-0.5">
+                      {estimateItems.map((item) => (
+                        <li key={item.id} className="text-xs">{item.name} x {item.quantity}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             )}
             

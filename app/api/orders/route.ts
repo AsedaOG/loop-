@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     
-    const { customerId, comments, products, totalAmount } = body
+    const { customerId, comments, products, totalAmount, totalShipping } = body
 
     // Validate required fields
     if (!customerId || !products || !totalAmount) {
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       comments,
       products,
       totalAmount,
+      totalShipping: totalShipping || 0,
     }])
 
     if (!result.success) {

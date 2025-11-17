@@ -81,15 +81,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const getTotalShipping = () => {
     return cart.reduce((total, item) => {
-      if (item.includeShip === 'Includes shipping' && item.shipping) {
-        return total + item.shipping
+      // Case-insensitive check for "Includes Shipping"
+      if (item.includeShip?.toLowerCase().includes('includes shipping') && item.shipping) {
+        return total + (item.shipping * item.quantity)
       }
       return total
     }, 0)
   }
 
   const hasEstimateOnArrival = () => {
-    return cart.some((item) => item.includeShip === 'Shipping Estimate on arrival')
+    // Case-insensitive check for "Shipping Estimate on arrival"
+    return cart.some((item) => item.includeShip?.toLowerCase().includes('estimate'))
   }
 
   return (

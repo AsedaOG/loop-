@@ -1,17 +1,28 @@
 'use client'
 
 import { useCart } from '@/context/CartContext'
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
+import { Trash2, Plus, Minus, ShoppingBag, Truck } from 'lucide-react'
 import Link from 'next/link'
 import CartItemImage from '@/components/CartItemImage'
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, getTotalPrice, getTotalShipping, hasEstimateOnArrival } = useCart()
+  const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice, getTotalShipping, hasEstimateOnArrival } = useCart()
   
   const subtotal = getTotalPrice()
   const shippingCost = getTotalShipping()
   const showEstimateMessage = hasEstimateOnArrival()
   const grandTotal = subtotal + shippingCost
+  
+  // Get list of items with estimate-on-arrival shipping
+  const estimateItems = cart.filter(item => 
+    item.includeShip?.toLowerCase().includes('estimate')
+  )
+  
+  const handleClearCart = () => {
+    if (confirm('Are you sure you want to clear all items from your cart?')) {
+      clearCart()
+    }
+  }
 
   if (cart.length === 0) {
     return (
@@ -31,7 +42,16 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 sm:py-12">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">Shopping Cart</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Shopping Cart</h1>
+        <button
+          onClick={handleClearCart}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg font-semibold hover:bg-red-100 transition"
+        >
+          <Trash2 size={18} />
+          Clear Cart
+        </button>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
@@ -51,6 +71,19 @@ export default function CartPage() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-base sm:text-lg text-gray-800 mb-1 line-clamp-2">{item.name}</h3>
                   <p className="text-gray-600 text-sm mb-2">GH₵ {item.price.toFixed(2)} each</p>
+                  
+                  {/* Shipping Badge */}
+                  {item.includeShip?.toLowerCase().includes('estimate') ? (
+                    <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full mb-2">
+                      <Truck size={12} />
+                      Shipping estimate on arrival
+                    </div>
+                  ) : item.shipping && item.shipping > 0 ? (
+                    <div className="inline-flex items-center gap-1.5 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full mb-2">
+                      <Truck size={12} />
+                      Shipping: GH₵ {item.shipping.toFixed(2)}
+                    </div>
+                  ) : null}
                   
                   {/* Quantity & Price Row for Mobile */}
                   <div className="flex items-center justify-between gap-3 mt-3">
@@ -111,8 +144,18 @@ export default function CartPage() {
               )}
               
               {showEstimateMessage && (
-                <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
-                  ⚠️ Some items: Shipping estimate on arrival
+                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Truck size={14} className="mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold mb-1">Shipping estimate on arrival:</p>
+                      <ul className="list-disc list-inside space-y-0.5">
+                        {estimateItems.map((item) => (
+                          <li key={item.id} className="text-xs">{item.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               )}
               

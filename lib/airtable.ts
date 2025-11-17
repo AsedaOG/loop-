@@ -36,6 +36,7 @@ export interface Order {
     price: number
   }[]
   totalAmount: number
+  totalShipping?: number
   checkoutNumber?: number
   status?: string
   orderDate?: string
@@ -276,16 +277,20 @@ export async function createOrders(orders: Order[], checkoutNumber?: number): Pr
         return names
       }, [])
       
+      // Calculate total shipping from orders
+      const totalShipping = orders.reduce((sum, order) => sum + (order.totalShipping || 0), 0)
+      
       await base(process.env.AIRTABLE_CHECKOUT_TABLE || 'Checkout Table').create([{
         fields: {
           'Checkout Number': finalCheckoutNumber,
           'Customer Id': customerRecordId ? [customerRecordId] : undefined, // Linked record as array
           'Total Amount': totalAmount,
+          'Total Shipping': totalShipping,
           'Products': productNames.join(', '),
         }
       }])
       
-      console.log(`Created checkout summary: #${finalCheckoutNumber}, Customer: ${customerId}, Total: ${totalAmount}, Products: ${productNames.join(', ')}`)
+      console.log(`Created checkout summary: #${finalCheckoutNumber}, Customer: ${customerId}, Total: ${totalAmount}, Shipping: ${totalShipping}, Products: ${productNames.join(', ')}`)
     } catch (checkoutError) {
       console.error('Error creating checkout summary:', checkoutError)
       console.error('Checkout error details:', JSON.stringify(checkoutError, null, 2))
