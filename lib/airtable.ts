@@ -18,6 +18,8 @@ export interface Product {
   images?: string[]
   category?: string
   inStock?: boolean
+  includeShip?: string
+  shipping?: number
 }
 
 export interface Order {
@@ -128,6 +130,8 @@ export async function getProducts(): Promise<Product[]> {
         images: allImages.length > 0 ? allImages : undefined,
         category: category,
         inStock: true, // No stock field in your schema, defaulting to true
+        includeShip: record.get('Include ship?') as string || undefined,
+        shipping: Number(record.get('shipping')) || 0,
       }
     })
   } catch (error) {
@@ -342,6 +346,8 @@ export async function getProduct(id: string): Promise<Product | null> {
       images: allImages.length > 0 ? allImages : undefined,
       category: category,
       inStock: true, // No stock field in your schema, defaulting to true
+      includeShip: record.get('Include ship?') as string || undefined,
+      shipping: Number(record.get('shipping')) || 0,
     }
   } catch (error) {
     console.error('Error fetching product:', error)

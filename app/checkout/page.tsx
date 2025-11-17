@@ -3,10 +3,11 @@
 import { useCart } from '@/context/CartContext'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
+import { Loader2, CheckCircle, Info } from 'lucide-react'
 
 export default function CheckoutPage() {
-  const { cart, getTotalPrice, clearCart } = useCart()
+  const { cart, getTotalPrice, getTotalShipping, hasEstimateOnArrival, clearCart } = useCart()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -15,6 +16,19 @@ export default function CheckoutPage() {
     customerId: '',
     comments: '',
   })
+  
+  const subtotal = getTotalPrice()
+  const shippingCost = getTotalShipping()
+  const showEstimateMessage = hasEstimateOnArrival()
+  const grandTotal = subtotal + shippingCost
+  
+  // Debug logging
+  console.log('Cart items with shipping data:', cart.map(item => ({
+    name: item.name,
+    includeShip: item.includeShip,
+    shipping: item.shipping
+  })))
+  console.log('Total shipping cost:', shippingCost)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,6 +106,24 @@ export default function CheckoutPage() {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Checkout Information</h2>
           
+          {/* Profile Notice */}
+          <div className="mb-6 bg-primary-50 border-l-4 border-primary-500 p-4 rounded-r-lg">
+            <div className="flex items-start">
+              <Info className="text-primary-600 mr-3 flex-shrink-0 mt-0.5" size={20} />
+              <div className="flex-1">
+                <p className="text-sm text-gray-700 mb-2">
+                  <strong>Need a Customer ID?</strong> You must create a profile first before checking out.
+                </p>
+                <Link 
+                  href="/profile"
+                  className="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition"
+                >
+                  Create Profile
+                </Link>
+              </div>
+            </div>
+          </div>
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-gray-700 font-semibold mb-2">
@@ -153,10 +185,30 @@ export default function CheckoutPage() {
             ))}
           </div>
           
-          <div className="border-t pt-4">
-            <div className="flex justify-between text-xl font-bold text-gray-800">
-              <span>Total</span>
-              <span>GH₵ {getTotalPrice().toFixed(2)}</span>
+          <div className="border-t pt-4 space-y-2">
+            <div className="flex justify-between text-gray-700">
+              <span>Subtotal</span>
+              <span className="font-semibold">GH₵ {subtotal.toFixed(2)}</span>
+            </div>
+            
+            {shippingCost > 0 && (
+              <div className="flex justify-between text-gray-700">
+                <span>Shipping</span>
+                <span className="font-semibold">GH₵ {shippingCost.toFixed(2)}</span>
+              </div>
+            )}
+            
+            {showEstimateMessage && (
+              <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                ⚠️ Some items: Shipping Estimate on arrival
+              </div>
+            )}
+            
+            <div className="border-t pt-2 mt-2">
+              <div className="flex justify-between text-xl font-bold text-gray-800">
+                <span>Total</span>
+                <span>GH₵ {grandTotal.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         </div>

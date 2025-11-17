@@ -6,7 +6,12 @@ import Link from 'next/link'
 import CartItemImage from '@/components/CartItemImage'
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, getTotalPrice } = useCart()
+  const { cart, removeFromCart, updateQuantity, getTotalPrice, getTotalShipping, hasEstimateOnArrival } = useCart()
+  
+  const subtotal = getTotalPrice()
+  const shippingCost = getTotalShipping()
+  const showEstimateMessage = hasEstimateOnArrival()
+  const grandTotal = subtotal + shippingCost
 
   if (cart.length === 0) {
     return (
@@ -90,16 +95,31 @@ export default function CartPage() {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>GH₵ {getTotalPrice().toFixed(2)}</span>
+                <span>GH₵ {subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span className="text-green-600">Free</span>
-              </div>
+              
+              {shippingCost > 0 ? (
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>GH₵ {shippingCost.toFixed(2)}</span>
+                </div>
+              ) : (
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span className="text-green-600">Free</span>
+                </div>
+              )}
+              
+              {showEstimateMessage && (
+                <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+                  ⚠️ Some items: Shipping estimate on arrival
+                </div>
+              )}
+              
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between text-xl font-bold text-gray-800">
                   <span>Total</span>
-                  <span>GH₵ {getTotalPrice().toFixed(2)}</span>
+                  <span>GH₵ {grandTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>

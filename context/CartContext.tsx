@@ -15,6 +15,8 @@ interface CartContextType {
   clearCart: () => void
   getTotalItems: () => number
   getTotalPrice: () => number
+  getTotalShipping: () => number
+  hasEstimateOnArrival: () => boolean
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -77,6 +79,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0)
   }
 
+  const getTotalShipping = () => {
+    return cart.reduce((total, item) => {
+      if (item.includeShip === 'Includes shipping' && item.shipping) {
+        return total + item.shipping
+      }
+      return total
+    }, 0)
+  }
+
+  const hasEstimateOnArrival = () => {
+    return cart.some((item) => item.includeShip === 'Shipping Estimate on arrival')
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -87,6 +102,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         getTotalItems,
         getTotalPrice,
+        getTotalShipping,
+        hasEstimateOnArrival,
       }}
     >
       {children}
