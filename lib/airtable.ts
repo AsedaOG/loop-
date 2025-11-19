@@ -258,17 +258,21 @@ export async function createOrders(orders: Order[], checkoutNumber?: number): Pr
 
     // Create summary record in Checkout Table
     try {
+      console.log('=== Starting Checkout Table creation ===')
       const firstOrder = orders[0]
       const customerId = firstOrder.customerId
+      console.log('Customer ID:', customerId)
       
       // Look up customer record ID for linked field
       const customerRecordId = await getCustomerRecordId(customerId)
+      console.log('Customer Record ID:', customerRecordId)
       
       const totalAmount = orders.reduce((sum, order) => {
         return sum + order.products.reduce((orderSum, product) => {
           return orderSum + (product.price * product.quantity)
         }, 0)
       }, 0)
+      console.log('Total Amount:', totalAmount)
       
       const productNames = orders.reduce((names: string[], order) => {
         order.products.forEach(product => {
@@ -276,24 +280,37 @@ export async function createOrders(orders: Order[], checkoutNumber?: number): Pr
         })
         return names
       }, [])
+      console.log('Product Names:', productNames)
       
       // Calculate total shipping from orders
       const totalShipping = orders.reduce((sum, order) => sum + (order.totalShipping || 0), 0)
+      console.log('Total Shipping:', totalShipping)
       
-      await base(process.env.AIRTABLE_CHECKOUT_TABLE || 'Checkout Table').create([{
+      const checkoutTableName = process.env.AIRTABLE_CHECKOUT_TABLE || 'Checkout Table'
+      console.log('Checkout Table Name:', checkoutTableName)
+      
+      const checkoutRecord = {
         fields: {
           'Checkout Number': finalCheckoutNumber,
-          'Customer Id': customerRecordId ? [customerRecordId] : undefined, // Linked record as array
+          'Customer Id': customerRecordId ? [customerRecordId] : undefined,
           'Total Amount': totalAmount,
-          'Total Shipping': totalShipping,
+          'Total  Shipping': totalShipping, // Note: Two spaces between Total and Shipping
           'Products': productNames.join(', '),
         }
-      }])
+      }
+      console.log('Checkout Record to create:', JSON.stringify(checkoutRecord, null, 2))
+      
+      const result = await base(checkoutTableName).create([checkoutRecord])
+      console.log('✅ Checkout Table record created successfully:', result[0].id)
       
       console.log(`Created checkout summary: #${finalCheckoutNumber}, Customer: ${customerId}, Total: ${totalAmount}, Shipping: ${totalShipping}, Products: ${productNames.join(', ')}`)
-    } catch (checkoutError) {
-      console.error('Error creating checkout summary:', checkoutError)
-      console.error('Checkout error details:', JSON.stringify(checkoutError, null, 2))
+    } catch (checkoutError: any) {
+      console.error('❌ Error creating checkout summary:', checkoutError)
+      console.error('Error message:', checkoutError.message)
+      console.error('Error statusCode:', checkoutError.statusCode)
+      if (checkoutError.error) {
+        console.error('Airtable error:', checkoutError.error)
+      }
       // Continue even if checkout summary fails
     }
 
