@@ -3,7 +3,12 @@ import Hero from '@/components/Hero'
 import { getProducts } from '@/lib/airtable'
 
 export default async function Home() {
-  const products = await getProducts()
+  const allProducts = await getProducts()
+  
+  // Filter out "Available In Ghana" products from main page
+  const products = allProducts.filter(
+    (product) => product.category !== 'Available In Ghana'
+  )
   
   return (
     <div className="bg-gradient-to-b from-white via-gray-50 to-white">
