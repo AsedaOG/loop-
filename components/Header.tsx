@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, User, Phone } from 'lucide-react'
+import { ShoppingCart, User, Phone, Info } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import LoopLogo from './LoopLogo'
 
@@ -19,6 +19,14 @@ export default function Header() {
           </Link>
           
           <div className="flex items-center space-x-4 sm:space-x-6">
+            <Link
+              href="/about"
+              className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
+            >
+              <Info size={24} />
+              <span className="hidden sm:inline">About</span>
+            </Link>
+            
             <Link
               href="/profile"
               className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"

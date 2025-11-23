@@ -13,7 +13,9 @@ export default async function Home() {
   return (
     <div className="bg-gradient-to-b from-white via-gray-50 to-white">
       <Hero />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      
+      {/* Products Section */}
+      <div id="products" className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-3">
             Explore Our Collection

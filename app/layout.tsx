@@ -46,6 +46,12 @@ export default function RootLayout({
                       <a href="/" className="hover:text-white transition">Home</a>
                     </li>
                     <li>
+                      <a href="/about" className="hover:text-white transition">About Us</a>
+                    </li>
+                    <li>
+                      <a href="/available-in-ghana" className="hover:text-white transition">Available In Ghana</a>
+                    </li>
+                    <li>
                       <a href="/profile" className="hover:text-white transition">Create Profile</a>
                     </li>
                     <li>

@@ -36,6 +36,13 @@ export default function Hero() {
             </a>
             
             <a
+              href="/about"
+              className="px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
+            >
+              Learn More
+            </a>
+            
+            <a
               href="/available-in-ghana"
               className="px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
             >
