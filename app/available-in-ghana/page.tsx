@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react'
 import ProductGrid from '@/components/ProductGrid'
 import { Product } from '@/lib/airtable'
-import { Loader2 } from 'lucide-react'
+import { Search, Loader2, X } from 'lucide-react'
 
 export default function AvailableInGhanaPage() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -16,11 +18,12 @@ export default function AvailableInGhanaPage() {
         const data = await response.json()
         
         // Filter products to show only "Available In Ghana" category
-        const filteredProducts = data.products.filter(
+        const ghanaProducts = data.products.filter(
           (product: Product) => product.category === 'Available In Ghana'
         )
         
-        setProducts(filteredProducts)
+        setAllProducts(ghanaProducts)
+        setFilteredProducts(ghanaProducts)
       } catch (error) {
         console.error('Error fetching products:', error)
       } finally {
@@ -30,6 +33,24 @@ export default function AvailableInGhanaPage() {
 
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredProducts(allProducts)
+    } else {
+      const query = searchQuery.toLowerCase()
+      const filtered = allProducts.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query)
+      )
+      setFilteredProducts(filtered)
+    }
+  }, [searchQuery, allProducts])
+
+  const clearSearch = () => {
+    setSearchQuery('')
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
@@ -47,30 +68,77 @@ export default function AvailableInGhanaPage() {
 
       {/* Products Section */}
       <div className="container mx-auto px-4 py-12">
+        {/* Search Bar */}
+        <div className="max-w-xl mx-auto mb-12">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Search products by name or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-full focus:border-primary-500 focus:outline-none text-gray-900 placeholder-gray-400 shadow-sm"
+            />
+            {searchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                aria-label="Clear search"
+              >
+                <X size={20} />
+              </button>
+            )}
+          </div>
+        </div>
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="animate-spin text-primary-600" size={48} />
           </div>
-        ) : products.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <>
             <div className="mb-8 text-center">
               <p className="text-gray-600">
-                Showing <strong>{products.length}</strong> product{products.length !== 1 ? 's' : ''} available in Ghana
+                {searchQuery ? (
+                  <>
+                    Found <strong>{filteredProducts.length}</strong> product{filteredProducts.length !== 1 ? 's' : ''}
+                  </>
+                ) : (
+                  <>
+                    Showing <strong>{filteredProducts.length}</strong> product{filteredProducts.length !== 1 ? 's' : ''} available in Ghana
+                  </>
+                )}
               </p>
             </div>
-            <ProductGrid products={products} />
+            <ProductGrid products={filteredProducts} />
           </>
         ) : (
           <div className="text-center py-20">
-            <p className="text-xl text-gray-600 mb-4">
-              No products are currently available in Ghana.
-            </p>
-            <a
-              href="/"
-              className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
-            >
-              Browse All Products
-            </a>
+            {searchQuery ? (
+              <>
+                <p className="text-xl text-gray-600 mb-4">
+                  No products found matching "{searchQuery}"
+                </p>
+                <button
+                  onClick={clearSearch}
+                  className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
+                >
+                  Clear Search
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-xl text-gray-600 mb-4">
+                  No products are currently available in Ghana.
+                </p>
+                <a
+                  href="/"
+                  className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
+                >
+                  Browse All Products
+                </a>
+              </>
+            )}
           </div>
         )}
       </div>
