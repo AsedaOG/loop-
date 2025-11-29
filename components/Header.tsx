@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, User, Phone, Info, Star } from 'lucide-react'
+import { ShoppingCart, User, Phone, Info } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import LoopLogo from './LoopLogo'
 
@@ -18,21 +18,13 @@ export default function Header() {
             <span className="ml-3 text-xl font-semibold text-gray-800">LOOP LOGISTICS</span>
           </Link>
           
-          <div className="flex items-center space-x-3 sm:space-x-5">
+          <div className="flex items-center space-x-4 sm:space-x-6">
             <Link
               href="/about"
               className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
             >
               <Info size={24} />
               <span className="hidden sm:inline">About</span>
-            </Link>
-            
-            <Link
-              href="/reviews"
-              className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
-            >
-              <Star size={24} />
-              <span className="hidden sm:inline">Reviews</span>
             </Link>
             
             <Link

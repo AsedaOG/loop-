@@ -51,13 +51,6 @@ export interface Customer {
   address?: string
 }
 
-export interface Review {
-  id: string
-  comments: string
-  reviewImage?: string
-  reviewImages?: string[]
-}
-
 // Get customer record ID by customer ID - tries multiple possible field names
 export async function getCustomerRecordId(customerId: string): Promise<string | null> {
   if (!base) {
@@ -381,39 +374,6 @@ export async function getProduct(id: string): Promise<Product | null> {
   } catch (error) {
     console.error('Error fetching product:', error)
     return null
-  }
-}
-
-// Fetch all reviews
-export async function getReviews(): Promise<Review[]> {
-  if (!base) {
-    console.warn('Airtable not configured')
-    return []
-  }
-
-  try {
-    const records = await base(process.env.AIRTABLE_REVIEWS_TABLE || 'Reviews')
-      .select({
-        view: 'Grid view',
-      })
-      .all()
-
-    return records.map((record) => {
-      const imageAttachments = record.get('Review Image') as any[]
-      const allImages = Array.isArray(imageAttachments) 
-        ? imageAttachments.map(img => img.url).filter(Boolean)
-        : []
-      
-      return {
-        id: record.id,
-        comments: record.get('comments') as string || '',
-        reviewImage: allImages[0] || undefined,
-        reviewImages: allImages.length > 0 ? allImages : undefined,
-      }
-    })
-  } catch (error) {
-    console.error('Error fetching reviews:', error)
-    return []
   }
 }
 

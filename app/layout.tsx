@@ -52,9 +52,6 @@ export default function RootLayout({
                       <a href="/available-in-ghana" className="hover:text-white transition">Available In Ghana</a>
                     </li>
                     <li>
-                      <a href="/reviews" className="hover:text-white transition">Customer Reviews</a>
-                    </li>
-                    <li>
                       <a href="/profile" className="hover:text-white transition">Create Profile</a>
                     </li>
                     <li>
