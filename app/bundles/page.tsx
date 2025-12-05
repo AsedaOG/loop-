@@ -34,7 +34,7 @@ export default function BundlesPage() {
         )
         
         // Randomize product order
-        const shuffledProducts = shuffleArray(bundleProducts)
+        const shuffledProducts = shuffleArray<Product>(bundleProducts)
         setAllProducts(shuffledProducts)
         setFilteredProducts(shuffledProducts)
       } catch (error) {

@@ -34,7 +34,7 @@ export default function AvailableInGhanaPage() {
         )
         
         // Randomize product order
-        const shuffledProducts = shuffleArray(ghanaProducts)
+        const shuffledProducts = shuffleArray<Product>(ghanaProducts)
         setAllProducts(shuffledProducts)
         setFilteredProducts(shuffledProducts)
       } catch (error) {

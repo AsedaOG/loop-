@@ -37,7 +37,7 @@ export default function Home() {
         )
         
         // Randomize product order
-        const shuffledProducts = shuffleArray(products)
+        const shuffledProducts = shuffleArray<Product>(products)
         setAllProducts(shuffledProducts)
         setFilteredProducts(shuffledProducts)
       } catch (error) {
