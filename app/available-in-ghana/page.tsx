@@ -71,7 +71,7 @@ export default function AvailableInGhanaPage() {
       <div className="bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <Link 
-            href="/"
+            href="/#products"
             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft size={20} />
@@ -152,7 +152,7 @@ export default function AvailableInGhanaPage() {
                   No products are currently available in Ghana.
                 </p>
                 <a
-                  href="/"
+                  href="/#products"
                   className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
                 >
                   Browse All Products

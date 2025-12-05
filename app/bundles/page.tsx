@@ -71,7 +71,7 @@ export default function BundlesPage() {
       <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <Link 
-            href="/"
+            href="/#products"
             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft size={20} />
@@ -156,7 +156,7 @@ export default function BundlesPage() {
                   No bundles are currently available.
                 </p>
                 <a
-                  href="/"
+                  href="/#products"
                   className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
                 >
                   Browse All Products
