@@ -6,6 +6,16 @@ import Hero from '@/components/Hero'
 import { Product } from '@/lib/airtable'
 import { Search, Loader2, X } from 'lucide-react'
 
+// Fisher-Yates shuffle algorithm
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function Home() {
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -18,13 +28,18 @@ export default function Home() {
         const response = await fetch('/api/products')
         const data = await response.json()
         
-        // Filter out "Available In Ghana" products from main page
+        // Filter out "Available In Ghana" and "BUNDLES" products from main page
+        // These have their own dedicated pages
         const products = data.products.filter(
-          (product: Product) => product.category !== 'Available In Ghana'
+          (product: Product) => 
+            product.category !== 'Available In Ghana' && 
+            product.category !== 'BUNDLES'
         )
         
-        setAllProducts(products)
-        setFilteredProducts(products)
+        // Randomize product order
+        const shuffledProducts = shuffleArray(products)
+        setAllProducts(shuffledProducts)
+        setFilteredProducts(shuffledProducts)
       } catch (error) {
         console.error('Error fetching products:', error)
       } finally {

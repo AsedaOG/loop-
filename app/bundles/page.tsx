@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import ProductGrid from '@/components/ProductGrid'
 import { Product } from '@/lib/airtable'
-import { Search, Loader2, X, ArrowLeft } from 'lucide-react'
+import { Search, Loader2, X, Package, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 // Fisher-Yates shuffle algorithm
@@ -16,7 +16,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled
 }
 
-export default function AvailableInGhanaPage() {
+export default function BundlesPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -28,13 +28,13 @@ export default function AvailableInGhanaPage() {
         const response = await fetch('/api/products')
         const data = await response.json()
         
-        // Filter products to show only "Available In Ghana" category
-        const ghanaProducts = data.products.filter(
-          (product: Product) => product.category === 'Available In Ghana'
+        // Filter products to show only "BUNDLES" product type
+        const bundleProducts = data.products.filter(
+          (product: Product) => product.category === 'BUNDLES'
         )
         
         // Randomize product order
-        const shuffledProducts = shuffleArray(ghanaProducts)
+        const shuffledProducts = shuffleArray(bundleProducts)
         setAllProducts(shuffledProducts)
         setFilteredProducts(shuffledProducts)
       } catch (error) {
@@ -66,9 +66,9 @@ export default function AvailableInGhanaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800 text-white py-16">
+      <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <Link 
             href="/"
@@ -77,11 +77,14 @@ export default function AvailableInGhanaPage() {
             <ArrowLeft size={20} />
             <span>Back to All Products</span>
           </Link>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4">
-            Available In Ghana 🇬🇭
-          </h1>
-          <p className="text-xl text-primary-50 max-w-2xl mx-auto">
-            Products currently in stock and ready for immediate delivery across Ghana
+          <div className="flex items-center justify-center mb-4">
+            <Package size={48} className="mr-3" />
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
+              Bundles
+            </h1>
+          </div>
+          <p className="text-xl text-amber-50 max-w-2xl mx-auto">
+            Save more with our specially curated product bundles and combo deals
           </p>
         </div>
       </div>
@@ -94,10 +97,10 @@ export default function AvailableInGhanaPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search products by name or description..."
+              placeholder="Search bundles by name or description..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-full focus:border-primary-500 focus:outline-none text-gray-900 placeholder-gray-400 shadow-sm"
+              className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-full focus:border-amber-500 focus:outline-none text-gray-900 placeholder-gray-400 shadow-sm"
             />
             {searchQuery && (
               <button
@@ -113,7 +116,7 @@ export default function AvailableInGhanaPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-primary-600" size={48} />
+            <Loader2 className="animate-spin text-amber-600" size={48} />
           </div>
         ) : filteredProducts.length > 0 ? (
           <>
@@ -121,11 +124,11 @@ export default function AvailableInGhanaPage() {
               <p className="text-gray-600">
                 {searchQuery ? (
                   <>
-                    Found <strong>{filteredProducts.length}</strong> product{filteredProducts.length !== 1 ? 's' : ''}
+                    Found <strong>{filteredProducts.length}</strong> bundle{filteredProducts.length !== 1 ? 's' : ''}
                   </>
                 ) : (
                   <>
-                    Showing <strong>{filteredProducts.length}</strong> product{filteredProducts.length !== 1 ? 's' : ''} available in Ghana
+                    Showing <strong>{filteredProducts.length}</strong> bundle{filteredProducts.length !== 1 ? 's' : ''} available
                   </>
                 )}
               </p>
@@ -137,23 +140,24 @@ export default function AvailableInGhanaPage() {
             {searchQuery ? (
               <>
                 <p className="text-xl text-gray-600 mb-4">
-                  No products found matching "{searchQuery}"
+                  No bundles found matching &quot;{searchQuery}&quot;
                 </p>
                 <button
                   onClick={clearSearch}
-                  className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
+                  className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
                 >
                   Clear Search
                 </button>
               </>
             ) : (
               <>
+                <Package size={64} className="mx-auto text-gray-300 mb-4" />
                 <p className="text-xl text-gray-600 mb-4">
-                  No products are currently available in Ghana.
+                  No bundles are currently available.
                 </p>
                 <a
                   href="/"
-                  className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
+                  className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 transition"
                 >
                   Browse All Products
                 </a>

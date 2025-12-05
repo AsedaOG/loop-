@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, User, Phone, Info } from 'lucide-react'
+import { ShoppingCart, User, Phone, Package, MapPin } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import LoopLogo from './LoopLogo'
 
@@ -18,42 +18,54 @@ export default function Header() {
             <span className="ml-3 text-xl font-semibold text-gray-800">LOOP LOGISTICS</span>
           </Link>
           
-          <div className="flex items-center space-x-4 sm:space-x-6">
-            <Link
-              href="/about"
-              className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
-            >
-              <Info size={24} />
-              <span className="hidden sm:inline">About</span>
-            </Link>
+          <div className="flex items-center space-x-3 sm:space-x-5">
+            {/* Shop Categories */}
+            <div className="flex items-center space-x-1 sm:space-x-3 border-r border-gray-200 pr-3 sm:pr-5">
+              <Link
+                href="/available-in-ghana"
+                className="flex items-center space-x-1.5 text-gray-700 hover:text-primary-600 transition px-2 py-1.5 rounded-lg hover:bg-primary-50"
+              >
+                <MapPin size={20} />
+                <span className="hidden md:inline text-sm font-medium">In Ghana</span>
+              </Link>
+              
+              <Link
+                href="/bundles"
+                className="flex items-center space-x-1.5 text-gray-700 hover:text-amber-600 transition px-2 py-1.5 rounded-lg hover:bg-amber-50"
+              >
+                <Package size={20} />
+                <span className="hidden md:inline text-sm font-medium">Bundles</span>
+              </Link>
+            </div>
             
+            {/* User Actions */}
             <Link
               href="/profile"
               className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
             >
-              <User size={24} />
-              <span className="hidden sm:inline">Create Profile</span>
+              <User size={22} />
+              <span className="hidden lg:inline">Profile</span>
             </Link>
             
             <Link
               href="/contact"
               className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition"
             >
-              <Phone size={24} />
-              <span className="hidden sm:inline">Contact</span>
+              <Phone size={22} />
+              <span className="hidden lg:inline">Contact</span>
             </Link>
             
             <Link
               href="/cart"
               className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition relative"
             >
-              <ShoppingCart size={24} />
+              <ShoppingCart size={22} />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                   {totalItems}
                 </span>
               )}
-              <span className="hidden sm:inline">Cart</span>
+              <span className="hidden lg:inline">Cart</span>
             </Link>
           </div>
         </div>

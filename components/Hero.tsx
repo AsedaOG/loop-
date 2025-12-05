@@ -24,10 +24,11 @@ export default function Hero() {
             Your trusted partner for premium products delivered with excellence
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col gap-6 justify-center items-center">
+            {/* Main CTA */}
             <a
               href="#products"
-              className="group px-8 py-4 bg-white text-primary-600 rounded-xl font-bold text-lg hover:bg-primary-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 inline-flex items-center gap-2"
+              className="group px-10 py-4 bg-white text-primary-600 rounded-xl font-bold text-lg hover:bg-primary-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 inline-flex items-center gap-2"
             >
               Shop Now
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,19 +36,31 @@ export default function Hero() {
               </svg>
             </a>
             
-            <a
-              href="/about"
-              className="px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
-            >
-              Learn More
-            </a>
-            
-            <a
-              href="/available-in-ghana"
-              className="px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
-            >
-              Available In Ghana 🇬🇭
-            </a>
+            {/* Category Links */}
+            <div className="flex flex-wrap gap-3 justify-center">
+              <a
+                href="/available-in-ghana"
+                className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/30 text-white rounded-full font-semibold hover:bg-white/20 hover:border-white transition-all inline-flex items-center gap-2"
+              >
+                <span>🇬🇭</span>
+                Available In Ghana
+              </a>
+              
+              <a
+                href="/bundles"
+                className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/30 text-white rounded-full font-semibold hover:bg-white/20 hover:border-white transition-all inline-flex items-center gap-2"
+              >
+                <span>📦</span>
+                Bundles
+              </a>
+              
+              <a
+                href="/about"
+                className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/30 text-white rounded-full font-semibold hover:bg-white/20 hover:border-white transition-all"
+              >
+                About Us
+              </a>
+            </div>
           </div>
         </div>
       </div>
